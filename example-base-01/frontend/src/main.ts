@@ -1,5 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './style.css';
+import { marked } from 'marked';
 import { PATTERN_DOCS } from './patternDocs';
 import type { Pattern, PatternCategory } from './types';
 
@@ -226,16 +227,18 @@ const renderDetails = () => {
               <div class="row g-3">
                 ${codeExamples
                   .map(
-                    (example) => `
-                      <div class="col-12 col-md-6">
-                        <div class="code-card border rounded-3 p-3 bg-dark text-light">
-                          <p class="code-language text-uppercase small text-muted mb-2">${example.language}</p>
-                          <pre><code>${example.code
-                            .replace(/&/g, '&amp;')
-                            .replace(/</g, '&lt;')
-                            .replace(/>/g, '&gt;')}</code></pre>
+                    (example) => {
+                      const markdown = `\`\`\`${example.language}\n${example.code}\n\`\`\``;
+                      const highlighted = marked.parse(markdown);
+                      return `
+                        <div class="col-12 col-md-6">
+                          <div class="code-card border rounded-3 p-3 bg-dark text-light">
+                            <p class="code-language text-uppercase small text-muted mb-2">${example.language}</p>
+                            <div class="code-content">${highlighted}</div>
+                          </div>
                         </div>
-                      </div>`
+                      `;
+                    }
                   )
                   .join('')}
               </div>
