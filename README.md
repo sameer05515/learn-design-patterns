@@ -1,33 +1,37 @@
 # learn-design-patterns
 
-### Design Patterns
+Spring Boot project showcasing code-level examples for 24 classic design patterns.
 
-#### Creational Patterns
-1. Singleton  
-2. Factory Method  
-3. Abstract Factory  
-4. Builder  
-5. Prototype  
-6. Object Pool  
+## Getting Started
 
-#### Structural Patterns
-7. Adapter  
-8. Bridge  
-9. Composite  
-10. Decorator  
-11. Facade  
-12. Flyweight  
-13. Proxy  
+- Java 17+
+- Apache Maven 3.9+ (wrapper optional if Maven already on path)
 
-#### Behavioral Patterns
-14. Strategy  
-15. Observer  
-16. Command  
-17. Chain of Responsibility  
-18. Template Method  
-19. Iterator  
-20. State  
-21. Mediator  
-22. Memento  
-23. Interpreter  
-24. Visitor
+```powershell
+mvn spring-boot:run
+# or
+mvn test
+```
+
+When the application is running, navigate to `http://localhost:8080/patterns` to receive JSON output describing every pattern and a short demo string.
+
+## API Response
+
+Each entry exposes:
+
+- `name` – pattern name
+- `category` – `CREATIONAL`, `STRUCTURAL`, or `BEHAVIORAL`
+- `intent` – one-line summary
+- `demo` – string produced by the example implementation
+
+## Code Map
+
+All implementations live under `src/main/java/com/example/designpatterns`.
+
+- Creational (`creational` package): Singleton, Factory Method, Abstract Factory, Builder, Prototype, Object Pool
+- Structural (`structural` package): Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy
+- Behavioral (`behavioral` package): Strategy, Observer, Command, Chain of Responsibility, Template Method, Iterator, State, Mediator, Memento, Interpreter, Visitor
+
+Shared abstractions used by the REST layer live in `shared`, while the web-facing code is inside `api`.
+
+Feel free to extend the examples with richer domains, persistence, or CLI automation depending on how you want to explore the patterns further.
