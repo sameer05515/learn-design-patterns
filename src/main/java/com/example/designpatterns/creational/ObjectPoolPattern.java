@@ -23,7 +23,9 @@ public class ObjectPoolPattern implements PatternExample {
         Connection second = pool.acquire();
         pool.release(first);
         Connection reused = pool.acquire();
-        return "Reused instance? " + (first == reused) + ", totalCreated=" + pool.created;
+        return "Reused instance? " + (first == reused)
+                + ", secondStillHeld=" + second.name()
+                + ", totalCreated=" + pool.created;
     }
 
     private static class ConnectionPool {
