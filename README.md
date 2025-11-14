@@ -17,6 +17,7 @@ When the application is running:
 
 - `http://localhost:8080/` renders a friendly welcome page with handy links.
 - `http://localhost:8080/patterns` returns JSON describing every pattern and a short demo string.
+- `http://localhost:8080/patterns/index.html` serves interactive static docs, with per-pattern views available via `view.html?name=...`.
 
 ### API Explorer / Docs
 

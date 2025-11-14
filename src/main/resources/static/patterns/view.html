@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pattern Viewer</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .panel {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 2rem 2.5rem;
+            width: min(720px, 100%);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45);
+        }
+        .badge {
+            text-transform: uppercase;
+            letter-spacing: 0.15rem;
+            font-size: 0.8rem;
+            color: #38bdf8;
+        }
+        h1 {
+            margin: 0.5rem 0 0;
+        }
+        .intent {
+            margin-top: 0.5rem;
+            color: #cbd5f5;
+            font-size: 1.1rem;
+        }
+        .demo-block {
+            margin-top: 1.5rem;
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            font-family: "JetBrains Mono", "Courier New", monospace;
+            line-height: 1.6;
+        }
+        .actions {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .actions a, .actions button {
+            border: none;
+            border-radius: 999px;
+            padding: 0.5rem 1.4rem;
+            cursor: pointer;
+            text-decoration: none;
+            background: #38bdf8;
+            color: #0f172a;
+            font-weight: 600;
+        }
+        .actions a.secondary {
+            background: #f8fafc;
+        }
+        #status {
+            margin-top: 1rem;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+<div class="panel">
+    <span class="badge" id="category">Loading...</span>
+    <h1 id="title"></h1>
+    <p class="intent" id="intent"></p>
+    <div class="demo-block" id="demo"></div>
+    <div class="actions">
+        <button id="refresh">Refresh Demo</button>
+        <a class="secondary" href="/patterns/index.html">&larr; Back to catalogue</a>
+        <a class="secondary" href="/patterns">API JSON</a>
+    </div>
+    <p id="status"></p>
+</div>
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const name = params.get("name");
+    const titleEl = document.getElementById("title");
+    const intentEl = document.getElementById("intent");
+    const categoryEl = document.getElementById("category");
+    const demoEl = document.getElementById("demo");
+    const statusEl = document.getElementById("status");
+    const refreshBtn = document.getElementById("refresh");
+
+    async function load() {
+        if (!name) {
+            statusEl.textContent = "Missing ?name= query parameter.";
+            return;
+        }
+        statusEl.textContent = "Fetching latest demo output...";
+        try {
+            const response = await fetch("/patterns");
+            const patterns = await response.json();
+            const pattern = patterns.find(p => p.name === name);
+            if (!pattern) {
+                statusEl.textContent = `Pattern "${name}" not found.`;
+                return;
+            }
+            titleEl.textContent = pattern.name;
+            intentEl.textContent = pattern.intent;
+            categoryEl.textContent = pattern.category;
+            demoEl.textContent = pattern.demo;
+            statusEl.textContent = "Demo output generated from live Spring beans.";
+        } catch (error) {
+            statusEl.textContent = "Unable to reach backend. Ensure the app is running.";
+        }
+    }
+
+    refreshBtn.addEventListener("click", load);
+    load();
+</script>
+</body>
+</html>
+

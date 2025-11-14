@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Design Pattern Catalogue</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f4f6fb;
+            color: #0f172a;
+        }
+        header {
+            background: #1d4ed8;
+            color: #fff;
+            padding: 2rem;
+            text-align: center;
+        }
+        main {
+            max-width: 960px;
+            margin: 2rem auto;
+            padding: 0 1rem 2rem;
+        }
+        .filters {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+        .filters button {
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            cursor: pointer;
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+        .filters button.active {
+            background: #2563eb;
+            color: #fff;
+        }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+        }
+        .card h2 {
+            margin: 0 0 0.4rem;
+        }
+        .category {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08rem;
+            color: #475569;
+        }
+        .actions {
+            margin-top: 0.8rem;
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .actions a {
+            background: #0ea5e9;
+            color: #fff;
+            padding: 0.4rem 0.9rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .demo {
+            margin-top: 0.8rem;
+            padding: 0.6rem 0.8rem;
+            background: #f1f5f9;
+            border-radius: 8px;
+            font-family: "JetBrains Mono", "Courier New", monospace;
+            font-size: 0.9rem;
+        }
+        #status {
+            text-align: center;
+            margin-top: 2rem;
+            color: #475569;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Design Pattern Catalogue</h1>
+    <p>Interactive docs for all 24 patterns served by the API.</p>
+</header>
+<main>
+    <section class="filters">
+        <button data-filter="ALL" class="active">All</button>
+        <button data-filter="CREATIONAL">Creational</button>
+        <button data-filter="STRUCTURAL">Structural</button>
+        <button data-filter="BEHAVIORAL">Behavioral</button>
+    </section>
+    <section id="cards"></section>
+    <p id="status"></p>
+</main>
+<script>
+    const cardsContainer = document.getElementById("cards");
+    const statusEl = document.getElementById("status");
+    let patterns = [];
+    let filter = "ALL";
+
+    document.querySelectorAll(".filters button").forEach(button => {
+        button.addEventListener("click", () => {
+            document.querySelectorAll(".filters button").forEach(b => b.classList.remove("active"));
+            button.classList.add("active");
+            filter = button.dataset.filter;
+            render();
+        });
+    });
+
+    async function loadPatterns() {
+        statusEl.textContent = "Loading documentation...";
+        try {
+            const response = await fetch("/patterns");
+            patterns = await response.json();
+            statusEl.textContent = "";
+            render();
+        } catch (err) {
+            statusEl.textContent = "Unable to load data. Start the Spring Boot app first.";
+        }
+    }
+
+    function render() {
+        cardsContainer.innerHTML = "";
+        const filtered = filter === "ALL"
+            ? patterns
+            : patterns.filter(p => p.category === filter);
+        filtered.forEach(pattern => {
+            const card = document.createElement("article");
+            card.className = "card";
+            card.innerHTML = `
+                <p class="category">${pattern.category}</p>
+                <h2>${pattern.name}</h2>
+                <p>${pattern.intent}</p>
+                <div class="demo">${pattern.demo}</div>
+                <div class="actions">
+                    <a href="/patterns/view.html?name=${encodeURIComponent(pattern.name)}">Interactive view</a>
+                    <a href="/swagger-ui/index.html#/${pattern.name.replace(/\s+/g, '_')}">Swagger anchor</a>
+                </div>
+            `;
+            cardsContainer.appendChild(card);
+        });
+        if (!filtered.length) {
+            cardsContainer.innerHTML = "<p>No patterns match this filter.</p>";
+        }
+    }
+
+    loadPatterns();
+</script>
+</body>
+</html>
+
