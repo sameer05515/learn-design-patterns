@@ -190,6 +190,7 @@ const renderDetails = () => {
   const fallbackOverview = state.selected.intent;
   const keyIdeas = doc?.keyIdeas ?? ['See backend demo output for more details.'];
   const whenToUse = doc?.whenToUse ?? ['Model-driven guidance not available yet.'];
+  const codeExamples = doc?.codeExamples ?? [];
 
   detailsEl.innerHTML = `
     <section class="detail-header">
@@ -218,6 +219,29 @@ const renderDetails = () => {
         <h3>Example scenario</h3>
         <p>${doc?.exampleScenario ?? 'Example scenario coming soon.'}</p>
       </div>
+      ${
+        codeExamples.length
+          ? `<div class="full-width code-examples">
+              <h3>Code examples</h3>
+              <div class="row g-3">
+                ${codeExamples
+                  .map(
+                    (example) => `
+                      <div class="col-12 col-md-6">
+                        <div class="code-card border rounded-3 p-3 bg-dark text-light">
+                          <p class="code-language text-uppercase small text-muted mb-2">${example.language}</p>
+                          <pre><code>${example.code
+                            .replace(/&/g, '&amp;')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;')}</code></pre>
+                        </div>
+                      </div>`
+                  )
+                  .join('')}
+              </div>
+            </div>`
+          : ''
+      }
     </section>
   `;
 };

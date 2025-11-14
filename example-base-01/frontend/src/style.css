@@ -208,6 +208,31 @@ body {
   border: 1px solid #e2e8f0;
 }
 
+.code-examples {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.code-card {
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.code-card pre {
+  margin: 0;
+  max-height: 220px;
+  overflow: auto;
+  font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+  font-size: 0.9rem;
+  color: #f8fafc;
+  white-space: pre-wrap;
+}
+
+.code-language {
+  letter-spacing: 0.2em;
+}
+
 .status {
   text-align: center;
   color: #64748b;

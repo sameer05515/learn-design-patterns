@@ -12,5 +12,6 @@ export type PatternDoc = {
   keyIdeas: string[];
   whenToUse: string[];
   exampleScenario: string;
+  codeExamples: Array<{ language: string; code: string }>;
 };
 

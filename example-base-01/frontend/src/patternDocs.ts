@@ -14,6 +14,14 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'You need a lightweight service locator for cross-cutting concerns.',
     ],
     exampleScenario: 'An application-wide feature flag registry pulled from remote config once and reused everywhere.',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `Configuration config = Configuration.getInstance();
+Configuration again = Configuration.getInstance();
+assert config == again;`,
+      },
+    ],
   },
   'Factory Method': {
     overview: 'Delegates object creation to subclasses or helper classes, allowing code to work with abstractions.',
@@ -28,6 +36,14 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'You want to encapsulate complex creation steps.',
     ],
     exampleScenario: 'Notification service that picks SMS, Push, or Email senders at runtime.',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `NotificationCreator creator = new SmsNotificationCreator();
+Notification sms = creator.create();
+sms.send("OTP 4321");`,
+      },
+    ],
   },
   'Abstract Factory': {
     overview: 'Produces families of related objects that are designed to be used together without specifying their concrete classes.',
@@ -42,6 +58,14 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'Creation logic depends on high-level configuration (region, brand).',
     ],
     exampleScenario: 'Generating light or dark UI components for a design system.',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `UiFactory factory = new DarkUiFactory();
+factory.button().render();
+factory.checkbox().render();`,
+      },
+    ],
   },
   'Builder': {
     overview: 'Separates the construction of a complex object from its representation using a fluent API.',
@@ -56,6 +80,16 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'Construction needs intermediate validation.',
     ],
     exampleScenario: 'Building PDF reports with optional sections based on user preferences.',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `Report report = new Report.Builder()
+    .title("Monthly")
+    .author("Ops")
+    .content("All systems go")
+    .build();`,
+      },
+    ],
   },
   'Prototype': {
     overview: 'Creates new objects by cloning existing prototype instances instead of instantiating classes directly.',
@@ -70,6 +104,13 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'Templates or drafts must be duplicated quickly.',
     ],
     exampleScenario: 'Duplicating design canvases or workflow templates with minor tweaks.',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `Document template = new Document("invoice", 4);
+Document copy = template.copy();`,
+      },
+    ],
   },
   'Object Pool': {
     overview: 'Maintains a set of reusable instances to minimize the cost of expensive creation/destruction cycles.',
@@ -84,6 +125,15 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'Garbage pressure from frequent allocations hurts performance.',
     ],
     exampleScenario: 'Managing HTTP client connections for an API gateway.',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `ConnectionPool pool = new ConnectionPool(2);
+Connection first = pool.acquire();
+pool.release(first);
+Connection reused = pool.acquire();`,
+      },
+    ],
   },
   'Adapter': {
     overview: 'Bridges incompatible interfaces by translating requests between a client and a legacy or third-party service.',
@@ -98,6 +148,14 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'Standardizing interfaces across modules.',
     ],
     exampleScenario: 'Adapting an old payment SOAP service to a modern REST contract.',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `PaymentProcessor processor =
+        new PaymentGatewayAdapter(new LegacyPaymentGateway());
+processor.pay(499.0);`,
+      },
+    ],
   },
   'Bridge': {
     overview: 'Separates abstractions from their implementations so both can vary independently.',
@@ -112,6 +170,13 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'Expect independent evolution of features and platforms.',
     ],
     exampleScenario: 'Remote controls working with TVs, projectors, or speakers via the same abstraction.',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `RemoteControl remote = new AdvancedRemote(new TvDevice());
+remote.togglePower();`,
+      },
+    ],
   },
   'Composite': {
     overview: 'Treats individual objects and compositions uniformly, enabling tree structures to be processed recursively.',
@@ -126,6 +191,17 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'Need to mix simple and complex elements uniformly.',
     ],
     exampleScenario: 'File explorers aggregating folder sizes from nested children.',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `Directory root = new Directory("root");
+root.add(new FileLeaf("notes.txt"));
+Directory nested = new Directory("images");
+nested.add(new FileLeaf("logo.png"));
+root.add(nested);
+root.describe();`,
+      },
+    ],
   },
   'Decorator': {
     overview: 'Adds responsibilities to objects dynamically by wrapping them, avoiding monolithic inheritance.',
@@ -140,6 +216,13 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'Inheritance would create an explosion of subclasses.',
     ],
     exampleScenario: 'Coffee order builder that adds milk, syrup, or whipped cream decorators on demand.',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `Coffee coffee = new MilkDecorator(new Espresso());
+coffee.description();`,
+      },
+    ],
   },
   'Facade': {
     overview: 'Provides a simplified interface to a complex subsystem, shielding clients from internal details.',
@@ -154,6 +237,13 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'You want to decouple legacy modules behind a simpler entry point.',
     ],
     exampleScenario: 'Travel booking facade orchestrating flights, hotels, and cars with one call.',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `TravelFacade facade = new TravelFacade();
+facade.bookTrip("Tokyo");`,
+      },
+    ],
   },
   'Flyweight': {
     overview: 'Shares intrinsic state across many light-weight objects, keeping extrinsic state outside the shared instance.',
@@ -168,6 +258,14 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'Creation cost is high but state is reusable.',
     ],
     exampleScenario: 'Particle systems sharing sprite metadata while varying positions externally.',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `ParticleFactory factory = new ParticleFactory();
+Particle smokeA = factory.get("smoke");
+Particle smokeB = factory.get("smoke");`,
+      },
+    ],
   },
   'Proxy': {
     overview: 'Acts as a placeholder controlling access to another object (lazy loading, security, caching, remoting).',
@@ -182,6 +280,13 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'Remote service calls should look like local ones.',
     ],
     exampleScenario: 'Virtual image viewer that loads the real image only when first displayed.',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `Image image = new ImageProxy("photo.jpg");
+image.display();`,
+      },
+    ],
   },
   'Strategy': {
     overview: 'Defines a family of algorithms encapsulated behind a common interface and interchangeable at runtime.',
@@ -196,6 +301,13 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'Testing different algorithms in isolation is important.',
     ],
     exampleScenario: 'Cart pricing strategies for retail campaigns (standard, discounted, wholesale).',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `PricingStrategy strategy = new DiscountStrategy();
+double price = strategy.apply(100);`,
+      },
+    ],
   },
   'Observer': {
     overview: 'Establishes a publish/subscribe relationship so observers react to subject state changes.',
@@ -210,6 +322,15 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'Implementing event buses or reactive UIs.',
     ],
     exampleScenario: 'News agency pushing alerts to multiple device clients.',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `NewsAgency agency = new NewsAgency();
+agency.register(new MobileClient());
+agency.register(new TabletClient());
+agency.publish("Storm warning");`,
+      },
+    ],
   },
   'Command': {
     overview: 'Encapsulates requests as objects, allowing queuing, logging, or undo/redo of operations.',
@@ -224,6 +345,14 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'Decouple UI actions from application logic.',
     ],
     exampleScenario: 'Smart home hub queuing device actions triggered by voice or automations.',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `Light light = new Light();
+Command on = new ToggleCommand(light, true);
+on.execute();`,
+      },
+    ],
   },
   'Chain of Responsibility': {
     overview: 'Passes requests along a chain of handlers until one handles it, promoting flexible routing.',
@@ -238,6 +367,15 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'Event handling where multiple listeners may act.',
     ],
     exampleScenario: 'Support ticket escalation from Tier 1 to Tier N.',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `Handler level1 = new LevelHandler("Tier1", 1);
+Handler level2 = new LevelHandler("Tier2", 2);
+level1.next(level2);
+level1.handle(2);`,
+      },
+    ],
   },
   'Template Method': {
     overview: 'Defines the skeleton of an algorithm in a base class while deferring steps to subclasses.',
@@ -252,6 +390,13 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'Need to enforce order of operations.',
     ],
     exampleScenario: 'File parsers that read, transform, and render data with different formats.',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `DataRenderer renderer = new CsvRenderer();
+String output = renderer.render();`,
+      },
+    ],
   },
   'Iterator': {
     overview: 'Provides a uniform way to traverse aggregates without exposing their internal representation.',
@@ -266,6 +411,16 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'Expose sequence-like APIs for complex structures.',
     ],
     exampleScenario: 'Streaming paginated API results while hiding cursor logic.',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `CustomCollection collection = new CustomCollection(new int[]{1,2,3});
+Iterator<Integer> iterator = collection.iterator();
+while (iterator.hasNext()) {
+    iterator.next();
+}`,
+      },
+    ],
   },
   'State': {
     overview: 'Lets an object alter its behavior when its internal state changes by delegating to state objects.',
@@ -280,6 +435,14 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'Helps model workflows (media player, order lifecycle).',
     ],
     exampleScenario: 'Audio player toggling between Playing, Paused, and Stopped states.',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `AudioPlayer player = new AudioPlayer();
+player.play();
+player.pause();`,
+      },
+    ],
   },
   'Mediator': {
     overview: 'Centralizes complex communication between objects, reducing direct dependencies.',
@@ -294,6 +457,17 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'Helps visualize/log communication paths centrally.',
     ],
     exampleScenario: 'Chat room broadcasting messages between users without direct references.',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `ChatRoom room = new ChatRoom();
+User alice = new User("Alice", room);
+User bob = new User("Bob", room);
+room.register(alice);
+room.register(bob);
+alice.send("Hi Bob");`,
+      },
+    ],
   },
   'Memento': {
     overview: 'Captures and externalizes an object’s internal state so it can be restored later without breaking encapsulation.',
@@ -308,6 +482,16 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'Auditing versions without leaking internals.',
     ],
     exampleScenario: 'Text editor snapshots enabling ctrl+z functionality.',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `TextEditor editor = new TextEditor();
+editor.write("Hello");
+Memento snapshot = editor.save();
+editor.write(" World");
+editor.restore(snapshot);`,
+      },
+    ],
   },
   'Interpreter': {
     overview: 'Defines a representation and evaluator for a simple language or grammar.',
@@ -322,6 +506,16 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'Need quick experimentation without writing a compiler.',
     ],
     exampleScenario: 'Evaluating alert rules like "A OR (B AND C)".',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `Expression expression =
+    new OrExpression(
+        new LiteralExpression(true),
+        new LiteralExpression(false));
+boolean result = expression.interpret();`,
+      },
+    ],
   },
   'Visitor': {
     overview: 'Separates operations from the object structure so new behaviors can be added without modifying the elements.',
@@ -336,6 +530,14 @@ export const PATTERN_DOCS: Record<string, PatternDoc> = {
       'Implementing exporters, validators, or analytics on ASTs.',
     ],
     exampleScenario: 'Calculating different metrics (area, perimeter, rendering) on a shape hierarchy.',
+    codeExamples: [
+      {
+        language: 'java',
+        code: `Visitor areaVisitor = new AreaVisitor();
+new Circle().accept(areaVisitor);
+new Square().accept(areaVisitor);`,
+      },
+    ],
   },
 };
 
