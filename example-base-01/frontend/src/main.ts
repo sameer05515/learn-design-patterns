@@ -6,6 +6,7 @@ import type { Pattern, PatternCategory } from './types';
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080').replace(/\/$/, '');
 const PATTERN_ENDPOINT = `${API_BASE_URL}/patterns`;
+const THEME_KEY = 'pattern-theme';
 
 type FilterState = 'ALL' | PatternCategory;
 
@@ -47,6 +48,9 @@ app.innerHTML = `
           <a class="btn btn-outline-light btn-sm rounded-pill" href="${API_BASE_URL}/swagger-ui/index.html" target="_blank" rel="noreferrer">Swagger UI</a>
           <a class="btn btn-outline-light btn-sm rounded-pill" href="${API_BASE_URL}/redoc.html" target="_blank" rel="noreferrer">ReDoc</a>
         </div>
+        <div class="theme-toggle mt-3">
+          <button id="theme-toggle" class="btn btn-light btn-sm rounded-pill">Switch to Dark Theme</button>
+        </div>
       </div>
     </header>
 
@@ -84,6 +88,7 @@ app.innerHTML = `
   </div>
 `;
 
+const themeToggleButton = document.querySelector<HTMLButtonElement>('#theme-toggle')!;
 const listEl = document.querySelector<HTMLDivElement>('#pattern-list')!;
 const detailsEl = document.querySelector<HTMLElement>('#pattern-details')!;
 const statusEl = document.querySelector<HTMLParagraphElement>('#status')!;
@@ -111,6 +116,33 @@ filterButtons.forEach((button) => {
     renderList();
   });
 });
+
+const getInitialTheme = (): 'light' | 'dark' => {
+  const stored = localStorage.getItem(THEME_KEY);
+  if (stored === 'light' || stored === 'dark') {
+    return stored;
+  }
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+};
+
+let currentTheme: 'light' | 'dark' = getInitialTheme();
+
+const applyTheme = (theme: 'light' | 'dark') => {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem(THEME_KEY, theme);
+  if (themeToggleButton) {
+    themeToggleButton.textContent = theme === 'dark' ? 'Switch to Light Theme' : 'Switch to Dark Theme';
+    themeToggleButton.classList.toggle('btn-outline-light', theme === 'dark');
+    themeToggleButton.classList.toggle('btn-light', theme !== 'dark');
+  }
+};
+
+themeToggleButton?.addEventListener('click', () => {
+  currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  applyTheme(currentTheme);
+});
+
+applyTheme(currentTheme);
 
 syncFilterButtons();
 

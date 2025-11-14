@@ -11,6 +11,15 @@
       <a class="btn btn-outline-light btn-sm rounded-pill" [href]="apiBaseUrl + '/swagger-ui/index.html'" target="_blank" rel="noreferrer">Swagger UI</a>
       <a class="btn btn-outline-light btn-sm rounded-pill" [href]="apiBaseUrl + '/redoc.html'" target="_blank" rel="noreferrer">ReDoc</a>
     </div>
+    <div class="theme-toggle mt-3">
+      <button
+        type="button"
+        class="btn btn-sm rounded-pill"
+        [ngClass]="theme === 'dark' ? 'btn-outline-light' : 'btn-light'"
+        (click)="toggleTheme()">
+        {{ themeLabel }}
+      </button>
+    </div>
   </header>
 
   <section class="controls card border-0 shadow-sm p-4 mb-4">

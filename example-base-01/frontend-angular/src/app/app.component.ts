@@ -7,6 +7,8 @@ import { PATTERN_DOCS } from './pattern-docs';
 import { PatternService } from './services/pattern.service';
 
 type FilterState = 'ALL' | PatternCategory;
+type Theme = 'light' | 'dark';
+const THEME_KEY = 'pattern-theme';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +26,7 @@ export class AppComponent implements OnInit {
   query = '';
   filter: FilterState = 'ALL';
   readonly filters: FilterState[] = ['ALL', 'CREATIONAL', 'STRUCTURAL', 'BEHAVIORAL'];
+  theme: Theme = this.getInitialTheme();
 
   constructor(
     private readonly patternService: PatternService,
@@ -34,7 +37,12 @@ export class AppComponent implements OnInit {
     return this.patternService.apiBaseUrl;
   }
 
+  get themeLabel(): string {
+    return this.theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
+  }
+
   ngOnInit(): void {
+    this.applyTheme(this.theme);
     this.loadPatterns();
   }
 
@@ -79,6 +87,11 @@ export class AppComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustHtml(rendered);
   }
 
+  toggleTheme(): void {
+    this.theme = this.theme === 'dark' ? 'light' : 'dark';
+    this.applyTheme(this.theme);
+  }
+
   private loadPatterns(): void {
     this.loading = true;
     this.error = null;
@@ -118,5 +131,18 @@ export class AppComponent implements OnInit {
     if (!this.filteredPatterns.length) {
       this.selected = undefined;
     }
+  }
+
+  private getInitialTheme(): Theme {
+    const stored = localStorage.getItem(THEME_KEY);
+    if (stored === 'light' || stored === 'dark') {
+      return stored;
+    }
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  private applyTheme(theme: Theme): void {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem(THEME_KEY, theme);
   }
 }
