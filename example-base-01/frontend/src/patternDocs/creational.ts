@@ -21,6 +21,18 @@ export const CREATIONAL_DOCS: Record<string, PatternDoc> = {
 Configuration again = Configuration.getInstance();
 assert config == again;`,
       },
+      {
+        language: 'javascript',
+        code: `const config = Configuration.getInstance();
+const again = Configuration.getInstance();
+console.assert(config === again);`,
+      },
+      {
+        language: 'python',
+        code: `config = Configuration.get_instance()
+again = Configuration.get_instance()
+assert config is again`,
+      },
     ],
   },
   'Factory Method': {
@@ -43,6 +55,18 @@ assert config == again;`,
 Notification sms = creator.create();
 sms.send("OTP 4321");`,
       },
+      {
+        language: 'javascript',
+        code: `let creator = new SmsNotificationCreator();
+const sms = creator.create();
+sms.send('OTP 4321');`,
+      },
+      {
+        language: 'python',
+        code: `creator = SmsNotificationCreator()
+sms = creator.create()
+sms.send('OTP 4321')`,
+      },
     ],
   },
   'Abstract Factory': {
@@ -64,6 +88,18 @@ sms.send("OTP 4321");`,
         code: `UiFactory factory = new DarkUiFactory();
 factory.button().render();
 factory.checkbox().render();`,
+      },
+      {
+        language: 'javascript',
+        code: `const factory = new DarkUiFactory();
+factory.button().render();
+factory.checkbox().render();`,
+      },
+      {
+        language: 'python',
+        code: `factory = DarkUiFactory()
+factory.button().render()
+factory.checkbox().render()`,
       },
     ],
   },
@@ -89,6 +125,22 @@ factory.checkbox().render();`,
     .content("All systems go")
     .build();`,
       },
+      {
+        language: 'javascript',
+        code: `const report = new ReportBuilder()
+  .title('Monthly')
+  .author('Ops')
+  .content('All systems go')
+  .build();`,
+      },
+      {
+        language: 'python',
+        code: `report = (ReportBuilder()
+          .title('Monthly')
+          .author('Ops')
+          .content('All systems go')
+          .build())`,
+      },
     ],
   },
   'Prototype': {
@@ -109,6 +161,16 @@ factory.checkbox().render();`,
         language: 'java',
         code: `Document template = new Document("invoice", 4);
 Document copy = template.copy();`,
+      },
+      {
+        language: 'javascript',
+        code: `const template = new Document('invoice', 4);
+const copy = template.copy();`,
+      },
+      {
+        language: 'python',
+        code: `template = Document('invoice', 4)
+copy = template.copy()`,
       },
     ],
   },
@@ -132,6 +194,20 @@ Document copy = template.copy();`,
 Connection first = pool.acquire();
 pool.release(first);
 Connection reused = pool.acquire();`,
+      },
+      {
+        language: 'javascript',
+        code: `const pool = new ConnectionPool(2);
+const first = pool.acquire();
+pool.release(first);
+const reused = pool.acquire();`,
+      },
+      {
+        language: 'python',
+        code: `pool = ConnectionPool(2)
+first = pool.acquire()
+pool.release(first)
+reused = pool.acquire()`,
       },
     ],
   },

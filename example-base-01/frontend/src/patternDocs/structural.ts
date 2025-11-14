@@ -21,6 +21,16 @@ export const STRUCTURAL_DOCS: Record<string, PatternDoc> = {
         new PaymentGatewayAdapter(new LegacyPaymentGateway());
 processor.pay(499.0);`,
       },
+      {
+        language: 'javascript',
+        code: `const processor = new PaymentGatewayAdapter(new LegacyPaymentGateway());
+processor.pay(499.0);`,
+      },
+      {
+        language: 'python',
+        code: `processor = PaymentGatewayAdapter(LegacyPaymentGateway())
+processor.pay(499.0)`,
+      },
     ],
   },
   'Bridge': {
@@ -41,6 +51,16 @@ processor.pay(499.0);`,
         language: 'java',
         code: `RemoteControl remote = new AdvancedRemote(new TvDevice());
 remote.togglePower();`,
+      },
+      {
+        language: 'javascript',
+        code: `const remote = new AdvancedRemote(new TvDevice());
+remote.togglePower();`,
+      },
+      {
+        language: 'python',
+        code: `remote = AdvancedRemote(TvDevice())
+remote.toggle_power()`,
       },
     ],
   },
@@ -67,6 +87,24 @@ nested.add(new FileLeaf("logo.png"));
 root.add(nested);
 root.describe();`,
       },
+      {
+        language: 'javascript',
+        code: `const root = new Directory('root');
+root.add(new FileLeaf('notes.txt'));
+const nested = new Directory('images');
+nested.add(new FileLeaf('logo.png'));
+root.add(nested);
+root.describe();`,
+      },
+      {
+        language: 'python',
+        code: `root = Directory('root')
+root.add(FileLeaf('notes.txt'))
+nested = Directory('images')
+nested.add(FileLeaf('logo.png'))
+root.add(nested)
+root.describe()`,
+      },
     ],
   },
   'Decorator': {
@@ -88,6 +126,16 @@ root.describe();`,
         code: `Coffee coffee = new MilkDecorator(new Espresso());
 coffee.description();`,
       },
+      {
+        language: 'javascript',
+        code: `const coffee = new MilkDecorator(new Espresso());
+coffee.description();`,
+      },
+      {
+        language: 'python',
+        code: `coffee = MilkDecorator(Espresso())
+coffee.description()`,
+      },
     ],
   },
   'Facade': {
@@ -108,6 +156,16 @@ coffee.description();`,
         language: 'java',
         code: `TravelFacade facade = new TravelFacade();
 facade.bookTrip("Tokyo");`,
+      },
+      {
+        language: 'javascript',
+        code: `const facade = new TravelFacade();
+facade.bookTrip('Tokyo');`,
+      },
+      {
+        language: 'python',
+        code: `facade = TravelFacade()
+facade.book_trip('Tokyo')`,
       },
     ],
   },
@@ -131,6 +189,18 @@ facade.bookTrip("Tokyo");`,
 Particle smokeA = factory.get("smoke");
 Particle smokeB = factory.get("smoke");`,
       },
+      {
+        language: 'javascript',
+        code: `const factory = new ParticleFactory();
+const smokeA = factory.get('smoke');
+const smokeB = factory.get('smoke');`,
+      },
+      {
+        language: 'python',
+        code: `factory = ParticleFactory()
+smoke_a = factory.get('smoke')
+smoke_b = factory.get('smoke')`,
+      },
     ],
   },
   'Proxy': {
@@ -151,6 +221,16 @@ Particle smokeB = factory.get("smoke");`,
         language: 'java',
         code: `Image image = new ImageProxy("photo.jpg");
 image.display();`,
+      },
+      {
+        language: 'javascript',
+        code: `const image = new ImageProxy('photo.jpg');
+image.display();`,
+      },
+      {
+        language: 'python',
+        code: `image = ImageProxy('photo.jpg')
+image.display()`,
       },
     ],
   },

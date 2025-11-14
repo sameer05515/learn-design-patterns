@@ -20,6 +20,16 @@ export const BEHAVIORAL_DOCS: Record<string, PatternDoc> = {
         code: `PricingStrategy strategy = new DiscountStrategy();
 double price = strategy.apply(100);`,
       },
+      {
+        language: 'javascript',
+        code: `const strategy = new DiscountStrategy();
+const price = strategy.apply(100);`,
+      },
+      {
+        language: 'python',
+        code: `strategy = DiscountStrategy()
+price = strategy.apply(100)`,
+      },
     ],
   },
   'Observer': {
@@ -38,10 +48,24 @@ double price = strategy.apply(100);`,
     codeExamples: [
       {
         language: 'java',
-        code: `NewsAgency agency = new NewsAgency;
+        code: `NewsAgency agency = new NewsAgency();
 agency.register(new MobileClient());
 agency.register(new TabletClient());
 agency.publish("Storm warning");`,
+      },
+      {
+        language: 'javascript',
+        code: `const agency = new NewsAgency();
+agency.register(new MobileClient());
+agency.register(new TabletClient());
+agency.publish('Storm warning');`,
+      },
+      {
+        language: 'python',
+        code: `agency = NewsAgency()
+agency.register(MobileClient())
+agency.register(TabletClient())
+agency.publish('Storm warning')`,
       },
     ],
   },
@@ -64,6 +88,18 @@ agency.publish("Storm warning");`,
         code: `Light light = new Light();
 Command on = new ToggleCommand(light, true);
 on.execute();`,
+      },
+      {
+        language: 'javascript',
+        code: `const light = new Light();
+const on = new ToggleCommand(light, true);
+on.execute();`,
+      },
+      {
+        language: 'python',
+        code: `light = Light()
+on = ToggleCommand(light, True)
+on.execute()`,
       },
     ],
   },
@@ -88,6 +124,20 @@ Handler level2 = new LevelHandler("Tier2", 2);
 level1.next(level2);
 level1.handle(2);`,
       },
+      {
+        language: 'javascript',
+        code: `const level1 = new LevelHandler('Tier1', 1);
+const level2 = new LevelHandler('Tier2', 2);
+level1.next(level2);
+level1.handle(2);`,
+      },
+      {
+        language: 'python',
+        code: `level1 = LevelHandler('Tier1', 1)
+level2 = LevelHandler('Tier2', 2)
+level1.next(level2)
+level1.handle(2)`,
+      },
     ],
   },
   'Template Method': {
@@ -108,6 +158,16 @@ level1.handle(2);`,
         language: 'java',
         code: `DataRenderer renderer = new CsvRenderer();
 String output = renderer.render();`,
+      },
+      {
+        language: 'javascript',
+        code: `const renderer = new CsvRenderer();
+const output = renderer.render();`,
+      },
+      {
+        language: 'python',
+        code: `renderer = CsvRenderer()
+output = renderer.render()`,
       },
     ],
   },
@@ -133,6 +193,21 @@ while (iterator.hasNext()) {
     iterator.next();
 }`,
       },
+      {
+        language: 'javascript',
+        code: `const collection = new CustomCollection([1, 2, 3]);
+const iterator = collection.iterator();
+while (iterator.hasNext()) {
+  iterator.next();
+}`,
+      },
+      {
+        language: 'python',
+        code: `collection = CustomCollection([1, 2, 3])
+iterator = iter(collection)
+for value in iterator:
+    _ = value`,
+      },
     ],
   },
   'State': {
@@ -154,6 +229,18 @@ while (iterator.hasNext()) {
         code: `AudioPlayer player = new AudioPlayer();
 player.play();
 player.pause();`,
+      },
+      {
+        language: 'javascript',
+        code: `const player = new AudioPlayer();
+player.play();
+player.pause();`,
+      },
+      {
+        language: 'python',
+        code: `player = AudioPlayer()
+player.play()
+player.pause()`,
       },
     ],
   },
@@ -180,6 +267,24 @@ room.register(alice);
 room.register(bob);
 alice.send("Hi Bob");`,
       },
+      {
+        language: 'javascript',
+        code: `const room = new ChatRoom();
+const alice = new User('Alice', room);
+const bob = new User('Bob', room);
+room.register(alice);
+room.register(bob);
+alice.send('Hi Bob');`,
+      },
+      {
+        language: 'python',
+        code: `room = ChatRoom()
+alice = User('Alice', room)
+bob = User('Bob', room)
+room.register(alice)
+room.register(bob)
+alice.send('Hi Bob')`,
+      },
     ],
   },
   'Memento': {
@@ -203,6 +308,22 @@ editor.write("Hello");
 Memento snapshot = editor.save();
 editor.write(" World");
 editor.restore(snapshot);`,
+      },
+      {
+        language: 'javascript',
+        code: `const editor = new TextEditor();
+editor.write('Hello');
+const snapshot = editor.save();
+editor.write(' World');
+editor.restore(snapshot);`,
+      },
+      {
+        language: 'python',
+        code: `editor = TextEditor()
+editor.write('Hello')
+snapshot = editor.save()
+editor.write(' World')
+editor.restore(snapshot)`,
       },
     ],
   },
@@ -228,6 +349,22 @@ editor.restore(snapshot);`,
         new LiteralExpression(false));
 boolean result = expression.interpret();`,
       },
+      {
+        language: 'javascript',
+        code: `const expression = new OrExpression(
+  new LiteralExpression(true),
+  new LiteralExpression(false)
+);
+const result = expression.interpret();`,
+      },
+      {
+        language: 'python',
+        code: `expression = OrExpression(
+    LiteralExpression(True),
+    LiteralExpression(False)
+)
+result = expression.interpret()`,
+      },
     ],
   },
   'Visitor': {
@@ -249,6 +386,18 @@ boolean result = expression.interpret();`,
         code: `Visitor areaVisitor = new AreaVisitor();
 new Circle().accept(areaVisitor);
 new Square().accept(areaVisitor);`,
+      },
+      {
+        language: 'javascript',
+        code: `const areaVisitor = new AreaVisitor();
+new Circle().accept(areaVisitor);
+new Square().accept(areaVisitor);`,
+      },
+      {
+        language: 'python',
+        code: `area_visitor = AreaVisitor()
+Circle().accept(area_visitor)
+Square().accept(area_visitor)`,
       },
     ],
   },
