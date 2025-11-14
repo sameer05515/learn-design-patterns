@@ -13,7 +13,16 @@ mvn spring-boot:run
 mvn test
 ```
 
-When the application is running, navigate to `http://localhost:8080/patterns` to receive JSON output describing every pattern and a short demo string.
+When the application is running:
+
+- `http://localhost:8080/` renders a friendly welcome page with handy links.
+- `http://localhost:8080/patterns` returns JSON describing every pattern and a short demo string.
+
+### API Explorer / Docs
+
+- Swagger UI: `http://localhost:8080/swagger-ui/index.html`
+- OpenAPI JSON: `http://localhost:8080/v3/api-docs`
+- ReDoc viewer: `http://localhost:8080/redoc.html`
 
 ## API Response
 
