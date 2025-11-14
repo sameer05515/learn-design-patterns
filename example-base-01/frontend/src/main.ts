@@ -1,3 +1,4 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './style.css';
 import { PATTERN_DOCS } from './patternDocs';
 import type { Pattern, PatternCategory } from './types';
@@ -31,47 +32,54 @@ if (!app) {
 }
 
 app.innerHTML = `
-  <div class="page">
-    <header class="hero">
+  <div class="container py-4 page">
+    <header class="hero bg-dark text-white rounded-4 shadow-lg p-4 mb-4">
       <div>
-        <p class="eyebrow">Design Patterns Explorer</p>
-        <h1>Visualize, learn, and test every pattern from the Spring Boot backend.</h1>
-        <p class="subtitle">
+        <p class="eyebrow text-uppercase">Design Patterns Explorer</p>
+        <h1 class="display-6 fw-semibold">Visualize, learn, and test every pattern from the Spring Boot backend.</h1>
+        <p class="subtitle lead">
           This frontend consumes <code>${PATTERN_ENDPOINT}</code> and enriches the response with curated documentation,
           decision guides, and live demo output straight from the backend services.
         </p>
-        <div class="service-links">
-          <a href="${API_BASE_URL}/patterns" target="_blank" rel="noreferrer">JSON API</a>
-          <a href="${API_BASE_URL}/swagger-ui/index.html" target="_blank" rel="noreferrer">Swagger UI</a>
-          <a href="${API_BASE_URL}/redoc.html" target="_blank" rel="noreferrer">ReDoc</a>
+        <div class="service-links d-flex flex-wrap gap-2 mt-3">
+          <a class="btn btn-outline-light btn-sm rounded-pill" href="${API_BASE_URL}/patterns" target="_blank" rel="noreferrer">JSON API</a>
+          <a class="btn btn-outline-light btn-sm rounded-pill" href="${API_BASE_URL}/swagger-ui/index.html" target="_blank" rel="noreferrer">Swagger UI</a>
+          <a class="btn btn-outline-light btn-sm rounded-pill" href="${API_BASE_URL}/redoc.html" target="_blank" rel="noreferrer">ReDoc</a>
         </div>
       </div>
     </header>
 
-    <section class="controls">
-      <label class="search">
-        <span>Search by name or intent</span>
-        <input id="search-input" type="search" placeholder="e.g. Observer, cache, workflow" />
-      </label>
-
-      <div class="filters" role="group" aria-label="Filter by category">
-        <button class="pill active" data-filter="ALL">All</button>
-        <button class="pill" data-filter="CREATIONAL">Creational</button>
-        <button class="pill" data-filter="STRUCTURAL">Structural</button>
-        <button class="pill" data-filter="BEHAVIORAL">Behavioral</button>
+    <section class="controls card border-0 shadow-sm p-4 mb-4">
+      <div class="row gy-3 align-items-end">
+        <div class="col-12 col-md">
+          <label class="form-label text-uppercase small text-muted" for="search-input">Search by name or intent</label>
+          <input id="search-input" type="search" class="form-control form-control-lg" placeholder="e.g. Observer, cache, workflow" />
+        </div>
+        <div class="col-12 col-md-auto">
+          <div class="filters btn-group flex-wrap" role="group" aria-label="Filter by category">
+            <button class="btn btn-outline-primary pill active" data-filter="ALL">All</button>
+            <button class="btn btn-outline-primary pill" data-filter="CREATIONAL">Creational</button>
+            <button class="btn btn-outline-primary pill" data-filter="STRUCTURAL">Structural</button>
+            <button class="btn btn-outline-primary pill" data-filter="BEHAVIORAL">Behavioral</button>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="content">
-      <aside id="pattern-list" aria-live="polite"></aside>
-      <article id="pattern-details">
-        <div class="placeholder">
-          <h2>Select a pattern</h2>
-          <p>Choose a pattern on the left to view deep documentation, decision guidelines, and the live demo payload returned by the backend.</p>
+    <section class="content row g-4">
+      <aside class="col-12 col-lg-5">
+        <div id="pattern-list" class="pattern-list list-group" aria-live="polite"></div>
+      </aside>
+      <article class="col-12 col-lg-7">
+        <div id="pattern-details" class="pattern-details card border-0 shadow-lg p-4 rounded-4">
+          <div class="placeholder text-center text-muted py-5">
+            <h2 class="h4">Select a pattern</h2>
+            <p>Choose a pattern on the left to view deep documentation, decision guidelines, and the live demo payload returned by the backend.</p>
+          </div>
         </div>
       </article>
     </section>
-    <p id="status" class="status"></p>
+    <p id="status" class="status text-center text-muted mt-3"></p>
   </div>
 `;
 
@@ -81,6 +89,15 @@ const statusEl = document.querySelector<HTMLParagraphElement>('#status')!;
 const searchInput = document.querySelector<HTMLInputElement>('#search-input')!;
 const filterButtons = document.querySelectorAll<HTMLButtonElement>('.filters .pill');
 
+const syncFilterButtons = () => {
+  filterButtons.forEach((btn) => {
+    const active = btn.dataset.filter === state.filter;
+    btn.classList.toggle('active', active);
+    btn.classList.toggle('btn-primary', active);
+    btn.classList.toggle('btn-outline-primary', !active);
+  });
+};
+
 searchInput.addEventListener('input', () => {
   state.query = searchInput.value.trim();
   renderList();
@@ -88,12 +105,13 @@ searchInput.addEventListener('input', () => {
 
 filterButtons.forEach((button) => {
   button.addEventListener('click', () => {
-    filterButtons.forEach((btn) => btn.classList.remove('active'));
-    button.classList.add('active');
     state.filter = button.dataset.filter as FilterState;
+    syncFilterButtons();
     renderList();
   });
 });
+
+syncFilterButtons();
 
 const loadPatterns = async () => {
   state.loading = true;
@@ -139,14 +157,15 @@ const renderList = () => {
   listEl.innerHTML = '';
   filtered.forEach((pattern) => {
     const button = document.createElement('button');
-    button.className = `pattern-card${state.selected?.name === pattern.name ? ' active' : ''}`;
+    const isActive = state.selected?.name === pattern.name;
+    button.className = `pattern-card list-group-item list-group-item-action d-flex justify-content-between align-items-center gap-3 rounded-3 mb-2 ${isActive ? 'active' : ''}`;
     button.innerHTML = `
-      <div>
-        <p class="card-eyebrow">${pattern.category}</p>
-        <h3>${pattern.name}</h3>
-        <p class="card-intent">${pattern.intent}</p>
+      <div class="flex-grow-1">
+        <p class="card-eyebrow mb-1">${pattern.category}</p>
+        <h3 class="h5 mb-1">${pattern.name}</h3>
+        <p class="card-intent mb-0">${pattern.intent}</p>
       </div>
-      <span class="chevron" aria-hidden="true">›</span>
+      <span class="chevron display-6 mb-0" aria-hidden="true">›</span>
     `;
     button.addEventListener('click', () => {
       state.selected = pattern;

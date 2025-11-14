@@ -1,6 +1,6 @@
 ## Frontend – Design Pattern Explorer
 
-Interactive UI built with Vite + TypeScript that consumes the Spring Boot backend in `../backend`.
+Interactive UI built with Vite + TypeScript + Bootstrap 5 that consumes the Spring Boot backend in `../backend`.
 
 ### Scripts
 
