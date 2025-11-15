@@ -33,10 +33,6 @@ export class AppComponent implements OnInit {
     private readonly sanitizer: DomSanitizer,
   ) {}
 
-  get apiBaseUrl(): string {
-    return this.patternService.apiBaseUrl;
-  }
-
   get themeLabel(): string {
     return this.theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
   }

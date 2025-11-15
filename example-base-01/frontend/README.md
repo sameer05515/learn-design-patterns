@@ -1,6 +1,6 @@
 ## Frontend – Design Pattern Explorer
 
-Interactive UI built with Vite + TypeScript + Bootstrap 5 that consumes the Spring Boot backend in `../backend`.
+Interactive UI built with Vite + TypeScript + Bootstrap 5 that runs entirely offline by bundling a `public/patterns.json` snapshot of all 24 design patterns.
 
 ### Scripts
 
@@ -11,15 +11,22 @@ npm run build      # create production build in dist/
 npm run preview    # serve built assets locally
 ```
 
-### Backend integration
+### Data loading
 
-- The app fetches `GET /patterns` to populate the catalogue.
-- Configure a custom backend base url via `VITE_API_BASE_URL` (defaults to `http://localhost:8080`).
-- Helpful endpoints are surfaced inside the UI: JSON API, Swagger UI, and ReDoc.
+- Pattern data is loaded from `public/patterns.json` at runtime.
+- Because the file lives alongside the compiled assets, the UI works on any static host (GitHub Pages, Netlify, S3, etc.) with no additional services.
+
+### Deploying to GitHub Pages (or any static host)
+
+1. `npm run build` – generates production assets in `dist/` using relative paths (see `vite.config.ts`).
+2. Copy the contents of `dist/` into your pages repository (e.g., clone `https://github.com/sameer05515/design-patterns`, delete its contents, and paste `dist/*`).
+3. Commit and push. In the GitHub repo, enable Pages → “Deploy from a branch” → choose the branch you pushed and the root folder.
+
+Because the build contains `patterns.json`, no backend is required—just drop the `dist/` folder into your static host, and the UI will load instantly.
 
 ### UI highlights
 
 - Filter patterns by category and search by name/intent.
-- Click any pattern to see curated documentation sourced from `src/patternDocs.ts`, including key ideas, when-to-use guidance, and sample scenarios.
-- Live demo output shown in the detail panel is read directly from the backend response so you can verify example behavior.
+- Click any pattern to see curated documentation sourced from `src/patternDocs`, including key ideas, when-to-use guidance, and sample scenarios.
+- Live demo output shown in the detail panel is read directly from the sample data so you can verify example behavior.
 

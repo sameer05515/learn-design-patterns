@@ -1,6 +1,6 @@
 ## Frontend (Angular)
 
-An Angular 18 implementation of the design-pattern explorer UI. It mirrors the Vite/TS experience from `example-base-01/frontend`, consuming the Spring Boot backend (`../backend`) to show demo output plus curated documentation for all 24 patterns.
+Angular 18 implementation of the design-pattern explorer UI. It mirrors the Vite/TS experience from `example-base-01/frontend`, but runs entirely offline by bundling `src/assets/patterns.json` so no backend is required at build or runtime.
 
 ### Getting started
 
@@ -11,11 +11,9 @@ npm start         # dev server on http://localhost:4200
 npm run build     # production build in dist/frontend-angular
 ```
 
-Configure a different backend origin by exposing `window.__API_BASE_URL__` before the Angular bundle loads (defaults to `http://localhost:8080`).
-
 ### Features
 
-- Fetches `GET /patterns` via `PatternService`, with Bootstrap 5 styling.
+- Loads pattern data from the bundled `assets/patterns.json`, with Bootstrap 5 styling.
 - Search + category filters, live demo output, and deep documentation sourced from shared `pattern-docs` modules.
 - Code examples per pattern rendered for Java, JavaScript, and Python using `marked`, with HTML sanitized for safe display.
 # FrontendAngular

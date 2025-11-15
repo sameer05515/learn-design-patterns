@@ -1,23 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
 import { Pattern } from '../models';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PatternService {
-  private readonly baseUrl = environment.apiBaseUrl.replace(/\/$/, '');
+  private readonly localAssetPath = 'assets/patterns.json';
 
   constructor(private readonly http: HttpClient) {}
 
-  get apiBaseUrl(): string {
-    return this.baseUrl;
-  }
-
-  fetchPatterns(): Observable<Pattern[]> {
-    return this.http.get<Pattern[]>(`${this.baseUrl}/patterns`);
+  fetchPatterns() {
+    return this.http.get<Pattern[]>(this.localAssetPath, { headers: { 'Cache-Control': 'no-store' } });
   }
 }
 

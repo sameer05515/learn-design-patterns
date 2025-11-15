@@ -4,8 +4,7 @@ import { marked } from 'marked';
 import { PATTERN_DOCS } from './patternDocs';
 import type { Pattern, PatternCategory } from './types';
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080').replace(/\/$/, '');
-const PATTERN_ENDPOINT = `${API_BASE_URL}/patterns`;
+const LOCAL_PATTERN_URL = './patterns.json';
 const THEME_KEY = 'pattern-theme';
 
 type FilterState = 'ALL' | PatternCategory;
@@ -38,15 +37,13 @@ app.innerHTML = `
     <header class="hero bg-dark text-white rounded-4 shadow-lg p-4 mb-4">
       <div>
         <p class="eyebrow text-uppercase">Design Patterns Explorer</p>
-        <h1 class="display-6 fw-semibold">Visualize, learn, and test every pattern from the Spring Boot backend.</h1>
+        <h1 class="display-6 fw-semibold">Visualize, learn, and test every pattern offline.</h1>
         <p class="subtitle lead">
-          This frontend consumes <code>${PATTERN_ENDPOINT}</code> and enriches the response with curated documentation,
-          decision guides, and live demo output straight from the backend services.
+          This frontend ships with a bundled <code>patterns.json</code> dataset and enriches the data with curated documentation,
+          decision guides, and live demo output for each example.
         </p>
         <div class="service-links d-flex flex-wrap gap-2 mt-3">
-          <a class="btn btn-outline-light btn-sm rounded-pill" href="${API_BASE_URL}/patterns" target="_blank" rel="noreferrer">JSON API</a>
-          <a class="btn btn-outline-light btn-sm rounded-pill" href="${API_BASE_URL}/swagger-ui/index.html" target="_blank" rel="noreferrer">Swagger UI</a>
-          <a class="btn btn-outline-light btn-sm rounded-pill" href="${API_BASE_URL}/redoc.html" target="_blank" rel="noreferrer">ReDoc</a>
+          <span class="badge text-bg-light rounded-pill">Static dataset • patterns.json</span>
         </div>
         <div class="theme-toggle mt-3">
           <button id="theme-toggle" class="btn btn-light btn-sm rounded-pill">Switch to Dark Theme</button>
@@ -79,7 +76,7 @@ app.innerHTML = `
         <div id="pattern-details" class="pattern-details card border-0 shadow-lg p-4 rounded-4">
           <div class="placeholder text-center text-muted py-5">
             <h2 class="h4">Select a pattern</h2>
-            <p>Choose a pattern on the left to view deep documentation, decision guidelines, and the live demo payload returned by the backend.</p>
+            <p>Choose a pattern on the left to view deep documentation, decision guidelines, and the live demo output produced by the sample implementation.</p>
           </div>
         </div>
       </article>
@@ -146,21 +143,28 @@ applyTheme(currentTheme);
 
 syncFilterButtons();
 
+const fetchPatternsFrom = async (url: string): Promise<Pattern[]> => {
+  const response = await fetch(url, { cache: 'no-store' });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
+  }
+  return response.json();
+};
+
 const loadPatterns = async () => {
   state.loading = true;
   state.error = null;
   renderStatus();
   try {
-    const response = await fetch(PATTERN_ENDPOINT);
-    if (!response.ok) {
-      throw new Error(`Backend responded with ${response.status}`);
-    }
-    const data: Pattern[] = await response.json();
-    state.patterns = data;
-    state.selected = data[0];
-  } catch (error) {
-    console.error(error);
-    state.error = error instanceof Error ? error.message : 'Unknown error';
+    const localData = await fetchPatternsFrom(LOCAL_PATTERN_URL);
+    state.patterns = localData;
+    state.selected = localData[0];
+  } catch (localError) {
+    console.error(localError);
+    state.error =
+      localError instanceof Error ? localError.message : 'Unable to load pattern data.';
+    state.patterns = [];
+    state.selected = undefined;
   } finally {
     state.loading = false;
     renderList();
@@ -214,14 +218,14 @@ const renderDetails = () => {
     detailsEl.innerHTML = `
       <div class="placeholder">
         <h2>Select a pattern</h2>
-        <p>Choose a pattern on the left to view deep documentation, decision guidelines, and the live demo payload returned by the backend.</p>
+        <p>Choose a pattern on the left to view deep documentation, decision guidelines, and the live demo output produced by the sample implementation.</p>
       </div>`;
     return;
   }
 
   const doc = PATTERN_DOCS[state.selected.name];
   const fallbackOverview = state.selected.intent;
-  const keyIdeas = doc?.keyIdeas ?? ['See backend demo output for more details.'];
+  const keyIdeas = doc?.keyIdeas ?? ['See the demo output for more details.'];
   const whenToUse = doc?.whenToUse ?? ['Model-driven guidance not available yet.'];
   const codeExamples = doc?.codeExamples ?? [];
 
@@ -283,11 +287,11 @@ const renderDetails = () => {
 
 const renderStatus = () => {
   if (state.loading) {
-    statusEl.textContent = 'Loading design patterns from backend...';
+    statusEl.textContent = 'Loading design patterns...';
     return;
   }
   if (state.error) {
-    statusEl.textContent = `Failed to load patterns: ${state.error}. Ensure the backend is running on ${API_BASE_URL}.`;
+    statusEl.textContent = `Failed to load patterns: ${state.error}.`;
     return;
   }
   statusEl.textContent = '';
