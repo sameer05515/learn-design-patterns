@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { marked } from 'marked';
 import { Pattern, PatternCategory, PatternDoc } from './models';
@@ -17,7 +17,7 @@ const THEME_KEY = 'pattern-theme';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   patterns: Pattern[] = [];
   filteredPatterns: Pattern[] = [];
   selected?: Pattern;
@@ -27,6 +27,7 @@ export class AppComponent implements OnInit {
   filter: FilterState = 'ALL';
   readonly filters: FilterState[] = ['ALL', 'CREATIONAL', 'STRUCTURAL', 'BEHAVIORAL'];
   theme: Theme = this.getInitialTheme();
+  private readonly hashChangeHandler = () => this.syncSelectionFromHash();
 
   constructor(
     private readonly patternService: PatternService,
@@ -39,12 +40,17 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.applyTheme(this.theme);
+    window.addEventListener('hashchange', this.hashChangeHandler);
     this.loadPatterns();
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('hashchange', this.hashChangeHandler);
   }
 
   get statusMessage(): string {
     if (this.loading) {
-      return 'Loading design patterns from backend...';
+      return 'Loading design patterns...';
     }
     if (this.error) {
       return `Failed to load patterns: ${this.error}`;
@@ -66,7 +72,11 @@ export class AppComponent implements OnInit {
   }
 
   selectPattern(pattern: Pattern): void {
+    if (this.selected?.name === pattern.name) {
+      return;
+    }
     this.selected = pattern;
+    this.updateHashForPattern(pattern);
   }
 
   trackByName(_: number, pattern: Pattern): string {
@@ -94,9 +104,7 @@ export class AppComponent implements OnInit {
     this.patternService.fetchPatterns().subscribe({
       next: (response) => {
         this.patterns = response ?? [];
-        if (!this.selected && this.patterns.length) {
-          this.selected = this.patterns[0];
-        }
+        this.syncSelectionFromHash();
         this.applyFilters();
         this.loading = false;
       },
@@ -127,6 +135,36 @@ export class AppComponent implements OnInit {
     if (!this.filteredPatterns.length) {
       this.selected = undefined;
     }
+  }
+
+  private syncSelectionFromHash(): void {
+    const slug = window.location.hash.replace(/^#/, '');
+    if (slug) {
+      const match = this.getPatternBySlug(slug);
+      if (match) {
+        this.selected = match;
+        return;
+      }
+    }
+    if (!this.selected && this.patterns.length) {
+      this.selected = this.patterns[0];
+      this.updateHashForPattern(this.selected);
+    }
+  }
+
+  private getPatternBySlug(slug: string): Pattern | undefined {
+    return this.patterns.find((pattern) => this.slugify(pattern.name) === slug);
+  }
+
+  private updateHashForPattern(pattern: Pattern): void {
+    const slug = this.slugify(pattern.name);
+    if (window.location.hash.slice(1) !== slug) {
+      window.history.replaceState(null, '', `#${slug}`);
+    }
+  }
+
+  private slugify(name: string): string {
+    return name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   }
 
   private getInitialTheme(): Theme {

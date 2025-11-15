@@ -16,6 +16,7 @@ npm run build     # production build in dist/frontend-angular
 - Loads pattern data from the bundled `assets/patterns.json`, with Bootstrap 5 styling.
 - Search + category filters, live demo output, and deep documentation sourced from shared `pattern-docs` modules.
 - Code examples per pattern rendered for Java, JavaScript, and Python using `marked`, with HTML sanitized for safe display.
+- Each pattern has a shareable hash route (e.g. `/#singleton`) so copying the URL preserves the current selection.
 # FrontendAngular
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.21.

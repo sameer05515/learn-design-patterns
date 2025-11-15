@@ -27,6 +27,7 @@ Because the build contains `patterns.json`, no backend is required—just drop t
 ### UI highlights
 
 - Filter patterns by category and search by name/intent.
-- Click any pattern to see curated documentation sourced from `src/patternDocs`, including key ideas, when-to-use guidance, and sample scenarios.
+- Click any pattern to see curated documentation sourced from `src/patternDocs`, including key ideas, when-to-use guidance, sample scenarios, and Java/JS/Python snippets.
+- Each pattern has a shareable route using the URL hash (e.g. `/#singleton`); selecting a pattern updates the hash automatically, and loading a URL with a hash pre-selects the pattern.
 - Live demo output shown in the detail panel is read directly from the sample data so you can verify example behavior.
 

@@ -24,6 +24,7 @@ const state: AppState = {
   error: null,
   query: '',
   filter: 'ALL',
+  selected: undefined,
 };
 
 const app = document.querySelector<HTMLDivElement>('#app');
@@ -91,6 +92,14 @@ const detailsEl = document.querySelector<HTMLElement>('#pattern-details')!;
 const statusEl = document.querySelector<HTMLParagraphElement>('#status')!;
 const searchInput = document.querySelector<HTMLInputElement>('#search-input')!;
 const filterButtons = document.querySelectorAll<HTMLButtonElement>('.filters .pill');
+const slugify = (name: string) =>
+  name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+const getPatternBySlug = (slug: string): Pattern | undefined =>
+  state.patterns.find((pattern) => slugify(pattern.name) === slug);
 
 const syncFilterButtons = () => {
   filterButtons.forEach((btn) => {
@@ -112,6 +121,47 @@ filterButtons.forEach((button) => {
     syncFilterButtons();
     renderList();
   });
+});
+
+const selectPattern = (pattern: Pattern | undefined, updateHash = true) => {
+  state.selected = pattern;
+  if (pattern && updateHash) {
+    const slug = slugify(pattern.name);
+    if (window.location.hash.slice(1) !== slug) {
+      window.history.replaceState(null, '', `#${slug}`);
+    }
+  }
+  renderList();
+  renderDetails();
+};
+
+const syncSelectionFromHash = () => {
+  const slug = window.location.hash.replace(/^#/, '');
+  if (slug) {
+    const match = getPatternBySlug(slug);
+    if (match) {
+      selectPattern(match, false);
+      return;
+    }
+  }
+  if (state.selected) {
+    selectPattern(state.selected, true);
+  } else if (state.patterns.length) {
+    selectPattern(state.patterns[0], true);
+  } else {
+    selectPattern(undefined, false);
+  }
+};
+
+window.addEventListener('hashchange', () => {
+  if (!state.patterns.length) {
+    return;
+  }
+  const slug = window.location.hash.replace(/^#/, '');
+  const match = slug ? getPatternBySlug(slug) : undefined;
+  if (match && match.name !== state.selected?.name) {
+    selectPattern(match, false);
+  }
 });
 
 const getInitialTheme = (): 'light' | 'dark' => {
@@ -158,7 +208,7 @@ const loadPatterns = async () => {
   try {
     const localData = await fetchPatternsFrom(LOCAL_PATTERN_URL);
     state.patterns = localData;
-    state.selected = localData[0];
+    state.selected = undefined;
   } catch (localError) {
     console.error(localError);
     state.error =
@@ -167,8 +217,11 @@ const loadPatterns = async () => {
     state.selected = undefined;
   } finally {
     state.loading = false;
-    renderList();
-    renderDetails();
+    if (state.patterns.length) {
+      syncSelectionFromHash();
+    } else {
+      selectPattern(undefined, false);
+    }
     renderStatus();
   }
 };
@@ -205,9 +258,10 @@ const renderList = () => {
       <span class="chevron display-6 mb-0" aria-hidden="true">›</span>
     `;
     button.addEventListener('click', () => {
-      state.selected = pattern;
-      renderList();
-      renderDetails();
+      if (state.selected?.name === pattern.name) {
+        return;
+      }
+      selectPattern(pattern);
     });
     listEl.appendChild(button);
   });
